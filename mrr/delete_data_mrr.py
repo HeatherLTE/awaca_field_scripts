@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-# a script to safely delete data from the mira which has been stored on at least one NAS
+# a script to safely delete data from the mrr which has been stored on at least one NAS
 # login to each NAS (via both networks)
 # for each locally stored file on the mira pc,
 #   check whether the file is stored on at least one nas 
@@ -20,7 +20,7 @@ import configparser
 
 # Import config file
 config = configparser.ConfigParser()
-config.read('/data_movement_scripts/config.conf')
+config.read('/data_movement_scripts/mrr/config_mrr.conf')
 
 days_old = 60
 cutoff_date = datetime.datetime.utcnow() - datetime.timedelta(days=days_old)
@@ -79,10 +79,10 @@ def check_file_on_ftp(nas, local_file_relative_path, remote_folder, ftp_user, ft
             ftp.quit()
             
             if local_file_relative_path in ftp_files:
-                #print(f"{local_file_relative_path} found on {nas}")
+                print(f"{local_file_relative_path} found on {nas}")
                 return True
             else:
-                #print(f"{local_file_relative_path} not found on {nas}")
+                print(f"{local_file_relative_path} not found on {nas}")
                 return False
             
         except Exception as e:

@@ -19,11 +19,12 @@ import configparser
 
 # Import config file
 config = configparser.ConfigParser()
-config.read('/data_movement_scripts/mrr/config_mrr.conf')
+config.read('/home/mrr/data_movement_scripts/config_mrr.conf')
 
 sync_current_month = True  # if True, only compare files in the current month to reduce file comparisons
 
 def main():
+    print(f"--------------{datetime.datetime.utcnow()}---------------")
     # FTP settings
     ftp_user = config['GENERAL']['NAS_ftp_user']
     ftp_password = config['GENERAL']['NAS_ftp_password']
@@ -58,7 +59,7 @@ def main():
             mrr_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
 
 def mrr_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder):
-    print("----------------------------------------------------------------")
+    
     for nas in ["NAS1", "NAS2"]:
         for network in ["_SW1", "_SW2"]:
             print(f"Uploading MRR data to {nas} on network {network}")

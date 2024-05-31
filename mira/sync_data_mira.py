@@ -24,6 +24,7 @@ config.read('/data_movement_scripts/config.conf')
 sync_current_month = True  # if True, only compare files in the current month to reduce file comparisons
 
 def main():
+    print(f"--------------{datetime.datetime.utcnow()}---------------")
     # FTP settings
     ftp_user = config['GENERAL']['NAS_ftp_user']
     ftp_password = config['GENERAL']['NAS_ftp_password']
@@ -59,7 +60,7 @@ def main():
             mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
 
 def mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder):
-    print("----------------------------------------------------------------")
+
     for nas in ["NAS1", "NAS2"]:
         for network in ["_SW1", "_SW2"]:
             print(f"Uploading MIRA data to {nas} on network {network}")
