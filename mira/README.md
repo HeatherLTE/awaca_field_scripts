@@ -1,11 +1,30 @@
+# Folder Structure
+
+Make the following directories on the mira pc:
+/home/data/awaca_scriptsnlogs
+/home/data/awaca_scriptsnlogs/scripts
+/home/data/awaca_scriptsnlogs/logs
+/home/data/awaca_scriptsnlogs/watchdog
+
+Add the following files to the scripts folder
+config.conf
+sync_data_mira.py
+delete_data_mira.py
+watchdog_mira_local.py
+
+
 # Crontabs
 
 ```
 #mira transfer to nas
-20,30,40 1 * * * /usr/bin/python3 /data_movement_scripts/sync_data_mira.py >> /data_movement_scripts/mira2nas.log 2>&1
+20,30,40 1 * * * /usr/bin/python3 /home/data/awaca_scriptsnlogs/scripts/sync_data_mira.py >> /home/data/awaca_scriptsnlogs/logs/mi>
 
 #mira delete old moments files if safely stored on nas
-45 1 * * * /usr/bin/python3 /data_movement_scripts/delete_data_mira.py >> /data_movement_scripts/delete_safe_moments.log 2>&1
+45 1 * * * /usr/bin/python3 /home/data/awaca_scriptsnlogs/scripts/delete_data_mira.py >> /home/data/awaca_scriptsnlogs/logs/delete>
+
+#mira watchdog local kibble creation and sync to ctrlpc
+5,35 * * * * /usr/bin/python3 /home/data/awaca_scriptsnlogs/scripts/watchdog_mira_local.py
+
 ```
 
 # checklist of things to check/change in the scripts
@@ -22,4 +41,9 @@
 ### In delete_data_mira.py
 - days_old
 
+### In watchdog_mira_local
+- path to config file
+
+# watchdog
+The script on the MIRA pc makes a local kibble file in the watchdog folder and syncs it to the 2 control pcs via ftp. The script should be run every 30 minutes. The sync to the control pc is untested!
 
