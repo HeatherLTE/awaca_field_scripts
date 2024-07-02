@@ -1,15 +1,15 @@
 # Folder Structure
 
-Make the following directories on the mira pc:
-/home/data/awaca_scriptsnlogs
-/home/data/awaca_scriptsnlogs/scripts
-/home/data/awaca_scriptsnlogs/logs
+Make the following directories on the mira pc: \
+/home/data/awaca_scriptsnlogs \
+/home/data/awaca_scriptsnlogs/scripts \
+/home/data/awaca_scriptsnlogs/logs \
 /home/data/awaca_scriptsnlogs/watchdog
 
-Add the following files to the scripts folder
-config.conf
-sync_data_mira.py
-delete_data_mira.py
+Add the following files to the scripts folder: \
+config.conf \
+sync_data_mira.py \
+delete_data_mira.py \
 watchdog_mira_local.py
 
 
@@ -27,7 +27,7 @@ watchdog_mira_local.py
 
 ```
 
-# checklist of things to check/change in the scripts
+# Checklist of things to check/change in the scripts
 - make sure all scripts are executable by data user
 - add crontab and check timings and paths
 
@@ -44,6 +44,6 @@ watchdog_mira_local.py
 ### In watchdog_mira_local
 - path to config file
 
-# watchdog
+# Watchdog
 The script on the MIRA pc makes a local kibble file in the watchdog folder and syncs it to the 2 control pcs via ftp. The script should be run every 30 minutes. The sync to the control pc is untested!
 
