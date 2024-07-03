@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 # a script to send MRR data to the 2 NAS in each OPU
-# the files must first bet transferred to eg the MIRA pc, where this script runs
+# the files must first be transferred to eg the MIRA pc or the control pc, where this script runs
 # the script attempts to upload any new or updated files from the radar computer to the NAS
 # there is no deletion of files on either computer
 # if sync_current_month is True, only attempt to sync the folders for the current month

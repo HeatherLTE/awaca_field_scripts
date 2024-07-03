@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 # a very very basic script for fetching data from the mrr to the mira via rsync
 
