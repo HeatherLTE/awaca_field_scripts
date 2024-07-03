@@ -11,7 +11,7 @@ Created on Tue Jun 18 09:31:46 2024
 ########################################################################################################################
 # WATCHDOG for MIRA PC, adapted from watchdog for the SARA PC developed by Olivier
 #
-# - This script should be copied in /home/sara/scripts/watchdog_mira.py
+# - This script should be copied in /home/mira/scripts/watchdog_mira.py
 # - This script should be periodically triggered using mira user's crontab.
 # - The duration between two executions should be greater than `DURATION_BETWEEN_ON_OFF_REBOOT_SECONDS` plus the time
 #   required by the target instrument to reboot and first update the kibble.
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     print(datetime.datetime.utcnow())
     os.makedirs(KIBBLES_FILE_PATH, exist_ok=True)
 
-    instrument_code = "sarapc"
+    instrument_code = "mira"
     if not (instrument_code in INSTRUMENTS):
         raise ValueError("First parameter should be a valid instrument code: " + ",".join(INSTRUMENTS))
 
