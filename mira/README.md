@@ -70,3 +70,29 @@ The script on the MIRA pc makes a local kibble file in the watchdog folder and s
 
 The script on the control PC checks the age of the kibble and powers the mira relay off and on if the kibble is too old. This script is untested!
 
+# Quicklooks
+
+## Installing conda
+```
+08/07/2024 12:56 sudo zypper refresh
+08/07/2024 12:59 pwd
+08/07/2024 12:59 ls
+08/07/2024 12:59 cd --
+08/07/2024 12:59 pwd
+08/07/2024 12:59 ls
+08/07/2024 12:59 cd Downloads/
+08/07/2024 12:59 ls
+08/07/2024 12:59 wget https://repo.anaconda.com/archive/Anaconda3-2023.03-Linux-x86_64.sh
+08/07/2024 13:00 sha256sum Anaconda3-2023.03-Linux-x86_64.sh
+08/07/2024 13:03 bash Anaconda3-2023.03-Linux-x86_64.sh
+08/07/2024 13:05 logout
+08/07/2024 13:06 ls -la
+08/07/2024 13:06 ~/anaconda3/bin/conda init
+08/07/2024 13:06 source ~/.bashrc
+08/07/2024 13:07 .conda --version
+08/07/2024 13:07 sudo .conda --version
+08/07/2024 13:07 ls -la
+08/07/2024 13:08 poweroff
+08/07/2024 14:00 /anaconda3/bin/conda init
+```
+
