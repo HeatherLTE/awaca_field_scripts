@@ -5,7 +5,8 @@ Make the following directories on the mira pc: \
 /home/data/awaca_scriptsnlogs \
 /home/data/awaca_scriptsnlogs/scripts \
 /home/data/awaca_scriptsnlogs/logs \
-/home/data/awaca_scriptsnlogs/watchdog
+/home/data/awaca_scriptsnlogs/watchdog \
+/home/data/awaca_scriptsnlogs/quicklooks_plots \
 
 Add the following files to the scripts folder: \
 config.conf \
@@ -13,6 +14,8 @@ sync_data_mira.py \
 delete_data_mira.py \
 watchdog_mira_local.py \
 rsync_recent_mrr2mira.sh \
+
+Add the whole quicklooks_scripts folder to the scripts folder
 
 ### On both control PCs
 Make the following directories as the mira user
