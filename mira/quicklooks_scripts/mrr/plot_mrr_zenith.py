@@ -183,10 +183,12 @@ def plot_mrr_zenith(dsorfilepaths,
     #format x axis
     
     if fix2day:
-        xrange_current = mdates.num2date(ax.get_xlim()) # have to convert from matplotlib date numbers - what a mess
+        t0 = min(first_times).astype('datetime64[s]').astype(dt.datetime) #have to convert to s first as otherwise return an int
+        t1 = max(last_times).astype('datetime64[s]').astype(dt.datetime)
         xrange_new = ['','']
-        xrange_new[0] = pd.to_datetime(xrange_current[0]).floor('1D') # have to use pandas in order to have the floor functionality
-        xrange_new[1] = pd.to_datetime(xrange_current[1]).ceil('1D')
+        xrange_new[0] = pd.to_datetime(t0 + dt.timedelta(minutes = 10)).floor('1D') # have to use pandas in order to have the floor functionality
+        xrange_new[1] = pd.to_datetime(t1 - dt.timedelta(minutes = 10)).ceil('1D')
+       
         ax.set_xlim(xrange_new)
         
         #add the day as title
