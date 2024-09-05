@@ -42,7 +42,7 @@ plot_defaults = {
     'RHO': {
         'cmap': 'Spectral_r',
         'zrange': [0,1],
-        'long_name': r'V-H Correlation'
+        'long_name': r'V-H Correlation $\rho_{HV}$'
         },
     
     'SNRg': {

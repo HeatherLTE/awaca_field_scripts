@@ -80,7 +80,7 @@ def find_mira_znc_zenith_files(start_datetime, end_datetime,
     dates = [dt.datetime.strptime(i, "%Y%m%d_%H%M") for i in date_strings]
 
 
-    mask = np.array([start_datetime < i < end_datetime for i in dates])
+    mask = np.array([start_datetime <= i <= end_datetime for i in dates])
     files_subset = np.array(correct_files)[mask]
     
     if len(files_subset) == 0:

@@ -13,6 +13,7 @@ Created on Thu Feb 29 08:09:49 2024
 def plot_mira_znc_zenith(dsorfilepaths,
                        variable = 'Zg',
                        figsize = [10,4],
+                       fontsize = 10,
                        addcbar = True,
                        ylim = [0,6000],
                        zrange = 'auto',
@@ -95,6 +96,8 @@ def plot_mira_znc_zenith(dsorfilepaths,
     
     #plot defaults and helper functions
     from mira.plot_mira_config import plot_defaults
+    
+    plt.rcParams.update({'font.size': fontsize})
     
     #convert to list to be able to use for loop
     if isinstance(dsorfilepaths, str) or isinstance(dsorfilepaths, xr.Dataset):
@@ -186,8 +189,8 @@ def plot_mira_znc_zenith(dsorfilepaths,
     
     if fix2day:
         
-        t0 = min(first_times).astype('datetime64[s]').astype(dt.datetime) #have to convert to s first as otherwise return an int
-        t1 = max(last_times).astype('datetime64[s]').astype(dt.datetime)
+        t0 = min(first_times).to_pydatetime() #the times in first_times are in pd.tslib.Timestamp....
+        t1 = max(first_times).to_pydatetime()
         xrange_new = ['','']
         xrange_new[0] = pd.to_datetime(t0 + dt.timedelta(minutes = 10)).floor('1D') # have to use pandas in order to have the floor functionality
         xrange_new[1] = pd.to_datetime(t1 - dt.timedelta(minutes = 10)).ceil('1D')
@@ -195,7 +198,7 @@ def plot_mira_znc_zenith(dsorfilepaths,
         ax.set_xlim(xrange_new)
         
         #add the day as title
-        ax.set_title(f'MIRA Zenith {xrange_new[0].strftime("%d/%m/%Y")}', loc = 'right', color = 'grey', fontsize = '10')
+        ax.set_title(f'MIRA Zenith {xrange_new[0].strftime("%d/%m/%Y")}', loc = 'right', color = 'grey')
         
         
     ax.set_xlabel('Time [UTC]')
@@ -212,7 +215,7 @@ def plot_mira_znc_zenith(dsorfilepaths,
     if heightaskm:
         y_vals = ax.get_yticks()
         ax.set_yticks(y_vals)
-        ax.set_yticklabels(['{:,.2f}'.format(x /1000) for x in y_vals])
+        ax.set_yticklabels(['{:,.0f}'.format(x /1000) for x in y_vals])
         ax.set_ylabel('Height Above Radar [km]')
     
 
@@ -252,6 +255,7 @@ def plot_mira_zenith_day(day_string_or_datetime,
                            fpath_moments,
                        variable = 'Zg',
                        figsize = [10,4],
+                       fontsize = 10,
                        addcbar = True,
                        ylim = [0,6000],
                        zrange = 'auto',
@@ -335,7 +339,7 @@ def plot_mira_zenith_day(day_string_or_datetime,
         return None
     
     #plot the zenith files for that day
-    fig, ax = plot_mira_znc_zenith(files_one_day, variable = variable, figsize = figsize, addcbar = addcbar, ylim = ylim, zrange = zrange, 
+    fig, ax = plot_mira_znc_zenith(files_one_day, variable = variable, figsize = figsize, fontsize = fontsize, addcbar = addcbar, ylim = ylim, zrange = zrange, 
                                  long_name = long_name, heightaskm = heightaskm, 
                                  fix2day = True, 
                                  cmap = cmap, 

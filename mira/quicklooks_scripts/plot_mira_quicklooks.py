@@ -28,7 +28,7 @@ dpi = 100
 overwrite = True #whether to overwrite plots that have already been made
 
 zenith_ylim = [0, 9000]
-snrthreshold = -50 #threshold of copolar SNR to filter plots
+snrthreshold = -100 #threshold of copolar SNR to filter plots
 ########################################
 
 # operational mode only considers files measured in the last three days
