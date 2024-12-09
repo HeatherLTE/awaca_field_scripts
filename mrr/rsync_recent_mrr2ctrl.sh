@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# script to sync recent data from the mrr to the mira pc to make quicklooks
+# script to sync recent data from the mrr to the ctrl pc for transfer to the nas (no direct transfer possible)
 # sync data from today and yesterday and the day before, and delete files older than 30 days
 
 
@@ -9,7 +9,7 @@ umask 002
 REMOTE_USER='mrruser'
 REMOTE_HOST='192.168.1.111'
 REMOTE_DIR='/U/data/'
-LOCAL_DIR='/mom/mrr/'
+LOCAL_DIR='/home/mrr/data/'
 
 
 echo "Fetching recent data from MRR"

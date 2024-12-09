@@ -26,9 +26,9 @@ def main():
 
     # write in the home folder of the control PC
     local_folder = config['PATHS']['local_watchdog_path']
-    local_file_path = os.path.join(local_folder, 'kibble_mirapc.txt')
+    local_file_path = os.path.join(local_folder, 'kibble_mira.txt')
     remote_folder = config['PATHS']['ctrlpc_watchdog_path']
-    remote_file_path = os.path.join(remote_folder, 'kibble_mirapc.txt')
+    remote_file_path = os.path.join(remote_folder, 'kibble_mira.txt')
 
     # create a local watchdog file with current time to copy in the remote Control PCs
     create_local_watchdog_file(local_file_path)
@@ -71,6 +71,7 @@ def update_remote_watchdog(ftp_user, ftp_password, local_file_path, remote_file_
         full path to the local watchdog file, with the filename
     remote_file_path : str
         full path to the remote watchdog file, with the filename
+        NOTE just put the kibble in the ctrlpc home folder, too complic to change directory
     """
 
     for pc in ["PCCONTROL1", "PCCONTROL2"]:
@@ -82,6 +83,7 @@ def update_remote_watchdog(ftp_user, ftp_password, local_file_path, remote_file_
                 # Connect to FTP server
                 ftp = ftplib.FTP(server, timeout=10)
                 ftp.login(ftp_user, ftp_password)
+                
 
                
                 with open(local_file_path, 'rb') as f:

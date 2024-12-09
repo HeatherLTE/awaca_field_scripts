@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-# a script to send MIRA data to the 2 NAS in each OPU
-# only the processed netcdf files in the 'mom' folder are transferred
+# a script to send MRR data to the 2 NAS in each OPU
+# the files must first be transferred to eg the MIRA pc or the control pc, where this script runs
 # the script attempts to upload any new or updated files from the radar computer to the NAS
 # there is no deletion of files on either computer
 # if sync_current_month is True, only attempt to sync the folders for the current month
@@ -19,7 +19,7 @@ import configparser
 
 # Import config file
 config = configparser.ConfigParser()
-config.read('/home/data/awaca_scriptsnlogs/scripts/config.conf')
+config.read('/home/data/awaca_scriptsnlogs/scripts/config_mrr.conf')
 
 sync_current_month = True  # if True, only compare files in the current month to reduce file comparisons
 
@@ -30,40 +30,39 @@ def main():
     ftp_password = config['GENERAL']['NAS_ftp_password']
     
     if sync_current_month:
-        year_string = datetime.datetime.utcnow().strftime("%Y")
-        month_string = datetime.datetime.utcnow().strftime("%m")
+        year_month_string = datetime.datetime.utcnow().strftime("%Y%m")
+        
         
         # paths
-        local_folder = os.path.join(config['PATHS']['data_archive'], year_string, month_string)
-        remote_folder = os.path.join(config['PATHS']['NAS_archive_path'], year_string, month_string)
+        local_folder = os.path.join(config['PATHS']['data_archive'], year_month_string)
+        remote_folder = os.path.join(config['PATHS']['NAS_archive_path'], year_month_string)
     else:
         # Sync the whole database
         local_folder = config['PATHS']['data_archive']
         remote_folder = config['PATHS']['NAS_archive_path']
     
     # Sync with the NAS database
-    mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
+    mrr_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
     
     if sync_current_month:
         # On the first of each month, also sync the previous month
         # to catch files around midnight of the month change
         if datetime.datetime.utcnow().day == 1:
             yesterday = datetime.datetime.utcnow() - datetime.timedelta(days=1)
-            year_string = yesterday.strftime("%Y")
-            month_string = yesterday.strftime("%m")
+            year_month_string = yesterday.strftime("%Y%m")
             
             # paths
-            local_folder = os.path.join(config['PATHS']['data_archive'], year_string, month_string)
-            remote_folder = os.path.join(config['PATHS']['NAS_archive_path'], year_string, month_string)
+            local_folder = os.path.join(config['PATHS']['data_archive'], year_month_string)
+            remote_folder = os.path.join(config['PATHS']['NAS_archive_path'], year_month_string)
             
             # Sync with the NAS database
-            mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
+            mrr_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
 
-def mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder):
-
+def mrr_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder):
+    
     for nas in ["NAS1", "NAS2"]:
         for network in ["_SW1", "_SW2"]:
-            print(f"Uploading MIRA data to {nas} on network {network}")
+            print(f"Uploading MRR data to {nas} on network {network}")
             
             server = config['NETWORK_ADDRESS'][nas + network]
             try:

@@ -4,14 +4,9 @@
 
 umask 002
 
-IPMRR='192.168.1.150'
+IPMRR='192.168.1.111'
 PATH_KIBBLE='/home/mrr/watchdog/kibble_mrr.txt'
 
-
-#!/bin/bash
-
-# Define the remote computer's IP address or hostname
-REMOTE_HOST="192.168.1.100"
 
 # Try to ping the remote computer
 if ping -c 1 "$IPMRR" &> /dev/null
@@ -23,7 +18,7 @@ then
     echo "$CURRENT_DATE_TIME" > "$PATH_KIBBLE"
     
     # Optional: Print a success message
-    echo "Ping to mrr successful. Date and time saved to $FILE_PATH"
+    echo "Ping to mrr successful. Date and time saved to $PATH_KIBBLE"
 else
     # Optional: Print a failure message
     echo "Ping failed. Remote computer is not accessible."

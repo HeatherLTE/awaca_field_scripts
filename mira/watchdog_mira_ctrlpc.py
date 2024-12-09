@@ -5,8 +5,6 @@ Created on Tue Jun 18 09:31:46 2024
 
 @author: corden
 """
-##NOTE THIS SCRIPT IS UNTESTED!!! TO BE TESTED IN ANTARCTICA...
-#may also be incompatible with planned shutdown strategy - ie should tell pc to shut down safely before cutting the power
 
 ########################################################################################################################
 # WATCHDOG for MIRA PC, adapted from watchdog for the SARA PC developed by Olivier
@@ -29,9 +27,10 @@ import time
 SERVER_HOST = '127.0.0.1'
 SERVER_PORT = 8082
 
-KIBBLES_FILE_PATH = "/home/mira/watchdog/"
+KIBBLES_FILE_PATH = "/home/mira/"
 #this is where the kibble is sent to from the mira pc
-#it is also where a file is created recording the number of reboots
+REBOOTS_FILE_PATH = "/home/mira/watchdog/"
+#this is where a file is created recording the number of reboots
 
 DURATION_BETWEEN_ON_OFF_REBOOT_SECONDS = 10
 MAX_KIBBLE_AGE_SECONDS = 60 * 70
@@ -59,7 +58,7 @@ def is_kibble_old(instrument_code: str) -> bool:
 
 
 def is_last_reboot_old_enough(instrument_code: str) -> bool:
-    reboots_filepath = os.path.join(KIBBLES_FILE_PATH, 'reboots_' + instrument_code)
+    reboots_filepath = os.path.join(REBOOTS_FILE_PATH, 'reboots_' + instrument_code)
     if not os.path.exists(reboots_filepath):
         print("'Reboots' file not found")
         return True
@@ -118,18 +117,18 @@ def get_next_reboot_duration(instrument_code: str):
     if reboot_count > 0:
         print(f"Already {str(reboot_count)} reboots done in a row.")
     age_minutes = 30 + (60 * (reboot_count ** 2))  # If previous reboot failed, wait longer than for the previous reboot
-    age_minutes = min(age_minutes, 7 * 24 * 60)  # In any case, reboot at least every week (if kibble is still too old)
+    age_minutes = min(age_minutes, 14 * 24 * 60)  # In any case, reboot at least every two weeks (if kibble is still too old)
     return age_minutes * 60
 
 
 def reset_reboot_count(instrument_code: str):
-    with open(os.path.join(KIBBLES_FILE_PATH, "reboots_" + instrument_code), "w") as file:
+    with open(os.path.join(REBOOTS_FILE_PATH, "reboots_" + instrument_code), "w") as file:
         file.write("0")
 
 
 def get_reboot_count(instrument_code: str) -> int:
     try:
-        with open(os.path.join(KIBBLES_FILE_PATH, "reboots_" + instrument_code), "r") as file:
+        with open(os.path.join(REBOOTS_FILE_PATH, "reboots_" + instrument_code), "r") as file:
             count = int(file.read())
     except ValueError:
         count = 0
@@ -138,7 +137,7 @@ def get_reboot_count(instrument_code: str) -> int:
 
 def increase_reboot_count(instrument_code: str):
     count_before = get_reboot_count(instrument_code)
-    with open(os.path.join(KIBBLES_FILE_PATH, "reboots_" + instrument_code), "w") as file:
+    with open(os.path.join(REBOOTS_FILE_PATH, "reboots_" + instrument_code), "w") as file:
         new_count = count_before + 1
         file.write(str(new_count))
 
@@ -162,13 +161,13 @@ def send_request(command: str, parameters: list=None):
 
 if __name__ == "__main__":
     print(datetime.datetime.utcnow())
-    os.makedirs(KIBBLES_FILE_PATH, exist_ok=True)
+    os.makedirs(REBOOTS_FILE_PATH, exist_ok=True)
 
     instrument_code = "mira"
     if not (instrument_code in INSTRUMENTS):
         raise ValueError("First parameter should be a valid instrument code: " + ",".join(INSTRUMENTS))
 
-    if not os.path.exists(os.path.join(KIBBLES_FILE_PATH, "reboots_" + instrument_code)):
+    if not os.path.exists(os.path.join(REBOOTS_FILE_PATH, "reboots_" + instrument_code)):
         reset_reboot_count(instrument_code)
 
     if is_kibble_old(instrument_code):

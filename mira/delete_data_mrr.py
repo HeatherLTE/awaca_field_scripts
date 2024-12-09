@@ -7,6 +7,8 @@
 #   check whether the file is stored on at least one nas 
 #   and is older than n days
 #   if so delete from control pc
+# note that this script is redundant under normal operation as rsync_recent_mrr also deletes files older than 30 days
+# just keep on the pc as a reserve
 
 
 @author: corden
@@ -20,9 +22,9 @@ import configparser
 
 # Import config file
 config = configparser.ConfigParser()
-config.read('/home/mrr/scripts/config_mrr.conf')
+config.read('/home/data/awaca_scriptsnlogs/scripts/config_mrr.conf')
 
-days_old = 10
+days_old = 60
 cutoff_date = datetime.datetime.utcnow() - datetime.timedelta(days=days_old)
 
 

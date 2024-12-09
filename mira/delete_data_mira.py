@@ -20,7 +20,7 @@ import configparser
 
 # Import config file
 config = configparser.ConfigParser()
-config.read('/data_movement_scripts/config.conf')
+config.read('/home/data/awaca_scriptsnlogs/scripts/config.conf')
 
 days_old = 60
 cutoff_date = datetime.datetime.utcnow() - datetime.timedelta(days=days_old)

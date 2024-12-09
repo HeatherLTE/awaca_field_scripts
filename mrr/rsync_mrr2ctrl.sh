@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # a very very basic script for fetching data from the mrr to the mira via rsync
+# note it syncs the whole directory, which might not be a good idea!
 
 umask 002
 
-IPMRR='192.168.1.150'
+IPMRR='192.168.1.111'
 path_remote='/U/data/'
 path_local='/home/mrr/data/'
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # a very very basic script for fetching data from the mrr to the mira via rsync
+# note it syncs the directory, which is probably not a good idea
 
 umask 002
 

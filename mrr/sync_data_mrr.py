@@ -19,7 +19,7 @@ import configparser
 
 # Import config file
 config = configparser.ConfigParser()
-config.read('/home/mrr/data_movement_scripts/config_mrr.conf')
+config.read('/home/mrr/scripts/config_mrr.conf')
 
 sync_current_month = True  # if True, only compare files in the current month to reduce file comparisons
 

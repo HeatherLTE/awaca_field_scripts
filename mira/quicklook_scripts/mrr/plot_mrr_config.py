@@ -12,19 +12,19 @@ plot_defaults = {
     
     'Ze': {
         'cmap': 'Spectral_r',
-        'zrange': [-60, 30],
+        'zrange': [-15, 25],
         'long_name': r'Equivalent Reflectivity $Z_e$ [dBZ]'
         },
     
     'Z': {
         'cmap': 'Spectral_r',
-        'zrange': [-60, 30],
+        'zrange': [-15, 25],
         'long_name': r'Reflectivity $Z$ [dBZ]'
         },
     
     'VEL': {
         'cmap': 'bwr',
-        'zrange': [-8, 5],
+        'zrange': [-6, 5],
         'long_name': r'Mean Radial Velocity [m s$^{-1}$]'
         },
     
@@ -37,7 +37,7 @@ plot_defaults = {
     
     'SNR': {
         'cmap': 'Spectral_r',
-        'zrange': [-10, 50],
+        'zrange': [-20, 5],
         'long_name': r'SNR [dB]'
         },
     

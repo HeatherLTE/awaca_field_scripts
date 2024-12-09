@@ -5,7 +5,7 @@ Created on Tue Jul 3 09:31:46 2024
 
 @author: corden
 """
-##NOTE THIS SCRIPT IS UNTESTED!!! TO BE TESTED IN ANTARCTICA...
+
 
 
 ########################################################################################################################
@@ -117,7 +117,7 @@ def get_next_reboot_duration(instrument_code: str):
     if reboot_count > 0:
         print(f"Already {str(reboot_count)} reboots done in a row.")
     age_minutes = 30 + (60 * (reboot_count ** 2))  # If previous reboot failed, wait longer than for the previous reboot
-    age_minutes = min(age_minutes, 7 * 24 * 60)  # In any case, reboot at least every week (if kibble is still too old)
+    age_minutes = min(age_minutes, 14 * 24 * 60)  # In any case, reboot at least every 2 weeks (if kibble is still too old)
     return age_minutes * 60
 
 
