@@ -1,0 +1,179 @@
+When all these steps are finished, connect between EPFL and the mirapc using:
+
+From mirapc data user
+
+ssh -R 9017:localhost:22 lteuser@128.178.240.186 -p 22
+
+Where 9017 changes depending on the opu location (9017, 9047, 9085, 9099)
+
+from ltesrv5 lteuser
+
+ssh data@localhost -p 9017
+sshmiracAQ3
+
+Log of whether the correct steps have been applied on each PC:
+2024.11.25: configured on miracAQ4 for d85 with port number 9085
+
+
+
+STEPS TO FOLLOW FOR EACH PC:
+
+1) First install autossh on the mira pc
+
+sudo apt-get install gcc make
+wget http://www.harding.motd.ca/autossh/autossh-1.4e.tgz
+tar -xf autossh-1.4e.tgz
+cd autossh-1.4e
+./configure
+make
+sudo make install
+
+If no internet, can still install with 
+
+Copy the file autossh-1.4e.tgz to any folder on the mira pc
+tar -xf autossh-1.4e.tgz
+cd autossh-1.4e
+./configure
+make
+sudo make install
+
+2) SSH key exchange:
+Note: can use the existing id_rsa, don't need to make new keys
+
+Copy the id_rsa.pub from lteuser /home/lteuser/.ssh/authorized_keys/id_rsa.pub in ltesrv5 to mirapc /home/data/.ssh/authorized_keys
+
+We ALSO have to send the public key of the mirapc to ltesrv5 /home/lteuser/.ssh/authorized_keys
+
+
+3) Create a systemd service with this name reverse_ssh_epfl.service in the folder /etc/systemd/system/reverse_ssh_epfl.service on the mirapc
+
+[Unit]
+Description=Reverse SSH Tunnel to epfl ltesrv5
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/autossh -M 0 -N -o "ServerAliveInterval=30" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes" -R 9017:localhost:22 lteuser@128.178.240.186 -p 22
+Restart=always
+RestartSec=10
+User=data
+Environment="AUTOSSH_GATETIME=0"
+
+[Install]
+WantedBy=multi-user.target
+
+
+Change the number 9017 for each pc: 9017 for d17, 9085 for d85, 9047 for d47, 9099 for dmc
+
+Note: might need to change to usr/bin/autossh depending on how autossh was installed - change this on d47 and d85!
+4) Then run:
+
+sudo systemctl daemon-reload
+sudo systemctl restart reverse_ssh_epfl.service
+sudo systemctl enable reverse_ssh_epfl.service 
+sudo systemctl status reverse_ssh_epfl.service 
+
+If the service has stopped, can also run
+sudo systemctl start reverse_ssh.service
+
+5) Create a second service /etc/systemd/system/reverse_ssh_asl.service to create a tunnel to Alejo's server (and repeat step 4!)
+
+[Unit]
+Description=Reverse SSH Tunnel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/autossh -M 0 -N -o "ServerAliveInterval=30" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes" -R 9085:localhost:22 adminsales@salessrv1.ddns.net -p 22
+Restart=always
+RestartSec=10
+User=data
+Environment="AUTOSSH_GATETIME=0"
+
+[Install]
+WantedBy=multi-user.target
+
+
+4) Create a script in /awaca_scriptsnlogs/scripts called send_ip.sh with this content to change the log file with the mira computer to get the IP each hour and send it to ltesrv5 /home/lteuser/public_ip-mira35cAQ4.log
+
+#!/bin/bash
+
+# Retrieve public IP
+public_ip=$(curl -4 -s ifconfig.me)
+
+# Send IP to remote server
+ssh lteuser@ltesrv5.epfl.ch "echo $public_ip >> ~/public_ip-mira35cAQ4.log"
+ssh adminsales@salessrv1.ddns.net "echo $public_ip >> ~/public_ip-mira35cAQ4.log"
+
+Note to change the name of the log!
+
+
+5) Create a crontab job on the mirapc as data user:
+
+EDITOR=nano crontab -e 
+
+0 * * * * bash /home/data/awaca_scriptsnlogs/scripts/send_ip.sh >> /home/data/awaca_scriptsnlogs/logs/send_ip.log 2>&1
+
+END OF STEPS TO FOLLOW
+
+
+
+
+
+
+I created an alias in ltesrv5 to ssh the mirapc like this sshmira35cAQ4  you can create all 4 computer in the same file /home/lteuser/.bash_aliases  add the following line for each of them alias sshmira35cAQ4='ssh data@localhost -p 9017'.
+2024.11.25 All aliases created
+
+thanks
+
+Alejo
+
+Checklist of things changed after first implementation at d17:
+- in the service remove usr/bin/autossh and change to just autossh
+- increased frequency of rsync transfer from mrr via crontab
+- changed rsync mrr to keep more mrr data on the mira and for correct folder structure (slashes at end of paths in rsync)
+
+
+
+
+
+Howto scan to find IP addresses of other computers on network
+ 
+sudo apt install net-tools  
+sudo apt install nmap
+sudo apt install netdiscover
+sudo apt install fping
+  
+Use nmap to scan all ips in 192.168.1.xx
+nmap -sn 192.168.1.0/24
+
+Use fping to do the same
+fping -a -g 192.168.1.0/24
+
+Use netdiscover to do the same
+sudo netdiscover -r 192.168.1.0/24
+
+Use net-tools
+ifconfig -> does the same as ip a but with more details
+ifconfig -a -> all details for all adaptors
+
+
+
+On the ltesrv5 side, Alejo will run a script to kill the port (every day), in case poorly closed connections leave the port open and busy.
+
+
+In case we have to create a hard-typed network configuration using netplan (if network manager doesn't work)
+Actually we can't do this as we don't have netplan installed....
+
+Create a file on /etc/netplan/01-network-manager-all.yaml
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enxac91a197da7a:
+      addresses: [128.178.90.2/24]
+      gateway4: 128.178.90.1
+      nameservers:
+          addresses: ["128.178.15.7", "128.178.15.8", "8.8.8.8","128.178.15.227","128.178.15.228"]
+
