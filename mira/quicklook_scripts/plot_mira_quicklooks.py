@@ -14,6 +14,7 @@ import pandas as pd
 from mira.plot_mira_znc_zenith import plot_mira_zenith_day
 
 ####### VARIABLES TO CHANGE #########
+site = 'd85'
 operational = True #only try to plot the last three days from today
 start_date = dt.date(2024, 3, 13) # day to start making plots on - not used if operational=true
 end_date = dt.date(2024, 3, 13) # day to stop making plots on -not used if operqtional=true
@@ -66,7 +67,7 @@ for plotday in days_to_search:
                                    variable = variable, ylim = zenith_ylim, 
                                    snrthreshold = snrthreshold, saveplot = True, 
                                    overwrite = overwrite_zenith, 
-                                   outpath = full_outpath, dpi = dpi)
+                                   outpath = full_outpath, dpi = dpi, site=site)
         except Exception as e:
             print(e)
             print('continuing...')

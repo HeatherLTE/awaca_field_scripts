@@ -30,6 +30,7 @@ def plot_mira_znc_zenith(dsorfilepaths,
                        saveasplot = 'auto',
                        outpath = '',
                        dpi = 300,
+                       site = '',
                        ):
     """
     Plot a time-height plot of MIRA moments data from the compressed .znc files. Produces a plot of one variable.
@@ -74,6 +75,8 @@ def plot_mira_znc_zenith(dsorfilepaths,
         path of the folder to save the plot in. The default is ''.
     dpi :  optional
          The default is 300.
+    site : optional 
+        Included in the filename, the default is ''
 
     Returns
     -------
@@ -205,7 +208,7 @@ def plot_mira_znc_zenith(dsorfilepaths,
         ax.set_xlim(xrange_new)
         
         #add the day as title
-        ax.set_title(f'MIRA Zenith {xrange_new[0].strftime("%d/%m/%Y")}', loc = 'right', color = 'grey')
+        ax.set_title(f'MIRA Zenith {site} {xrange_new[0].strftime("%d/%m/%Y")}', loc = 'right', color = 'grey')
         
         
     ax.set_xlabel('Time [UTC]')
@@ -235,7 +238,7 @@ def plot_mira_znc_zenith(dsorfilepaths,
         if saveasplot == 'auto':
             t0 = min(first_times).astype('datetime64[s]').astype(dt.datetime) #have to convert to s first as otherwise return an int
             t1 = max(last_times).astype('datetime64[s]').astype(dt.datetime)
-            filename = f'{t0.strftime("%Y%m%d%H%M%S")}_{t1.strftime("%Y%m%d%H%M%S")}_mira_zenith_{variable}'
+            filename = f'{t0.strftime("%Y%m%d%H%M%S")}_{t1.strftime("%Y%m%d%H%M%S")}_mira_zenith_{site}_{variable}'
         else:
             filename = saveasplot
             
@@ -279,7 +282,8 @@ def plot_mira_zenith_day(day_string_or_datetime,
                        saveasplot = 'auto',
                        outpath = '',
                        dpi = 300,
-                       returnfig = False
+                       returnfig = False,
+                       site = ''
                        ):
     
     """
@@ -324,7 +328,7 @@ def plot_mira_zenith_day(day_string_or_datetime,
     if saveplot:
         
         if saveasplot == 'auto':
-            filename = f'{plot_day.strftime("%Y%m%d")}_mira_zenith_day_{variable}'
+            filename = f'{plot_day.strftime("%Y%m%d")}_mira_zenith_day_{site}_{variable}'
         else:
             filename = saveasplot
             
@@ -353,7 +357,7 @@ def plot_mira_zenith_day(day_string_or_datetime,
                                  filtersnr = filtersnr, snrvariable = snrvariable, snrthreshold = snrthreshold, 
                                  plotgrid = plotgrid, dateformat = dateformat, 
                                  saveplot=False, #control saving in wrapper function
-                                 outpath = outpath, dpi = dpi)
+                                 outpath = outpath, dpi = dpi, site=site)
     
     #machinery to save plot
     if saveplot:

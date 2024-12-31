@@ -95,6 +95,7 @@ BASH_ENV=~/.bashrc_conda
 ### In the quicklooks scripts
 - check paths in plot_mira_quicklooks.py and plot_mrr_quicklooks.py
 - set operational=True
+- change the site!
 - check date structure in find_mira_znc_zenith_files.py and find_mrr_zenith_files.py
 
 # Watchdog
@@ -169,6 +170,18 @@ nano .bashrc_conda #paste the conda snippet
 
 ## ssh connection to epfl
 Follow the instrcutions in mira-configuration.txt!
+
+## Netcdf header
+Don't forget to change the site information in /ifcg/header.ini. Edit the file as sudo then, as data user, run reload_header to apply the changes.
+
+## nomachine
+Download the .rpm package from the nomachine website and run
+```
+sudo rpm -ivh pkgName_pkgVersion_arch.rpm
+```
+
+## NTP Time Sync
+Yast -> Time and Date -> more settings -> add the two control pcs in the table of ntp servers
 
 
 

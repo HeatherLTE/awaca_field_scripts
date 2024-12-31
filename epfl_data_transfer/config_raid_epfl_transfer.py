@@ -24,22 +24,36 @@ config = {
         'mrr':{
         'path_quicklooks': '/home/data/awaca_scriptsnlogs/quicklook_plots/mrr/',
         'path_data': '/mom/mrr/',
-        'path_logs': '/home/data/awaca_scriptsnlogs/logs/',
+        'path_logs': '/home/data/awaca_scriptsnlogs/logs/'
         
             }
         },
     
     'd47':{
         'mira':{
+            'path_quicklooks': '/home/data/awaca_scriptsnlogs/quicklook_plots/mira/',
+            'path_logs': '/home/data/awaca_scriptsnlogs/logs/',
+            'path_data': '/mom/',
+            'port_ssh_epfl': 9047
             },
         'mrr':{
+        'path_quicklooks': '/home/data/awaca_scriptsnlogs/quicklook_plots/mrr/',
+        'path_data': '/mom/mrr/',
+        'path_logs': '/home/data/awaca_scriptsnlogs/logs/'
             }
         },
     
     'd85':{
         'mira':{
+            'path_quicklooks': '/home/data/awaca_scriptsnlogs/quicklook_plots/mira/',
+            'path_logs': '/home/data/awaca_scriptsnlogs/logs/',
+            'path_data': '/mom/',
+            'port_ssh_epfl': 9085
             },
         'mrr':{
+        'path_quicklooks': '/home/data/awaca_scriptsnlogs/quicklook_plots/mrr/',
+        'path_data': '/mom/mrr/',
+        'path_logs': '/home/data/awaca_scriptsnlogs/logs/'
             }
         },
     

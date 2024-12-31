@@ -64,3 +64,15 @@ On each control pc, with TIMES OFFSET (add 5 mins for ctrlpc2)
 # Watchdog
 Since the MRR can not make it's own watchdog kibble, the cntrol pc makes the pc. The script watchdog_mrr_ping_kibble.sh makes a new kibble if the mrr is accessible via a ping on network 1. The script watchdog_mrr_ctrlpc.py checks the age of this kibble and reboots only if network 1 is up.
 
+# Network settings and time sync
+On the website, the correct network settings for the opu are:
+Request mode: static
+IP address: 192.168.1.111
+Subnet mask: 255.255.255.0
+Gateway:192.168.1.1
+DNS: 8.8.8.8
+
+On the time synchronisation tab, add the two control pcs. 192.168.1.11 and 192.168.1.12
+
+
+
