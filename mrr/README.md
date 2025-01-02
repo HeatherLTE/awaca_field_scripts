@@ -31,6 +31,9 @@ On each control pc, with TIMES OFFSET (add 5 mins for ctrlpc2)
 
 # mrr watchdog check
 15 * * * * /usr/bin/python3 /home/mrr/scripts/watchdog_mrr_ctrlpc.py >> /home/mrr/logs/watchdog_mrr.log 2>&1
+
+# cntrl pc user-specific log-rotation
+0 2 * * * /usr/sbin/logrotate /home/mrr/logs/logrotate.conf --state /home/mrr/logs/logrotate.state
 ```
 
 # checklist of things to check/change in the scripts
@@ -73,6 +76,38 @@ Gateway:192.168.1.1
 DNS: 8.8.8.8
 
 On the time synchronisation tab, add the two control pcs. 192.168.1.11 and 192.168.1.12
+
+# logrotate
+
+### On the control pc
+As mrr user, make a file in /home/mrr/logs/ called logrotate.conf with the following contents:
+```
+/home/mrr/logs/*.log
+{
+    # rotate log files weekly
+    weekly
+    
+    #don't give an error if the logs are missing
+    missingok
+    
+    # keep 3 weeks of backlogs
+    rotate 3
+    
+    # compress 
+    compress
+    
+    # don't rotate if empty
+    notifempty
+    
+    # max size a log file can reach (if bigger it is rotated even if younger than 1 week)
+    maxsize 10M
+}
+```
+Make a logrotate status file:
+```
+logrotate /home/mrr/logs/logrotate.conf --state /home/mrr/logs/logrotate.state
+```
+Make a crontab to perform the logrotation daily with the correct status file (see cntrlpc crontab above)
 
 
 

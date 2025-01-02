@@ -65,6 +65,9 @@ BASH_ENV=~/.bashrc_conda
 ```
 # mira watchdog
 15 * * * * /usr/bin/python3 /home/mira/scripts/watchdog_mira_ctrlpc.py >> /home/mira/logs/watchdog_mira.log 2>&1
+
+# cntrl pc user-specific log-rotation
+0 2 * * * /usr/sbin/logrotate /home/mira/logs/logrotate.conf --state /home/mira/logs/logrotate.state
 ```
 
 # Checklist of things to check/change in the scripts
@@ -182,6 +185,82 @@ sudo rpm -ivh pkgName_pkgVersion_arch.rpm
 
 ## NTP Time Sync
 Yast -> Time and Date -> more settings -> add the two control pcs in the table of ntp servers
+
+## logrotate
+Information: https://betterstack.com/community/guides/logging/how-to-manage-log-files-with-logrotate-on-ubuntu-20-04/
+
+We use the first option for the mira pc, and the system-independent option for the control pc (no sudo access)
+
+### On the mira pc:
+
+in /etc/logrotate.d, make a file called awaca with the following contents
+
+```
+/home/data/awaca_scriptsnlogs/logs/*.log
+{
+    # rotate log files weekly
+    weekly
+    
+    #don't give an error if the logs are missing
+    missingok
+    
+    # keep 3 weeks of backlogs
+    rotate 3
+    
+    # compress 
+    compress
+    
+    # don't rotate if empty
+    notifempty
+    
+    # max size a log file can reach (if bigger it is rotated even if younger than 1 week)
+    maxsize 10M
+}
+	
+```
+This makes .gz files once the log files are older than one week or larger than 10M. The .gz files can be viewed using zcat. There will only ever be 3 weeks worth of logs in the log folder.
+
+The operation can be checked with
+```
+sudo logrotate -f /etc/logrotate.d/awaca
+```
+(forces the log rotation requested in the awaca file, even if the time period has not passed)
+```
+sudo logrotate /etc/logrotate.conf --debug
+```
+prints debug messages of logrotate
+
+### On the control pc
+As mira user, make a file in /home/mira/logs/ called logrotate.conf with the following contents:
+```
+/home/mira/logs/*.log
+{
+    # rotate log files weekly
+    weekly
+    
+    #don't give an error if the logs are missing
+    missingok
+    
+    # keep 3 weeks of backlogs
+    rotate 3
+    
+    # compress 
+    compress
+    
+    # don't rotate if empty
+    notifempty
+    
+    # max size a log file can reach (if bigger it is rotated even if younger than 1 week)
+    maxsize 10M
+}
+```
+Make a logrotate status file:
+```
+logrotate /home/mira/logs/logrotate.conf --state /home/mira/logs/logrotate.state
+```
+Make a crontab to perform the logrotation daily with the correct status file (see cntrlpc crontab above)
+
+
 
 
 
