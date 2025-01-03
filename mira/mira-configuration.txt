@@ -93,6 +93,7 @@ Environment="AUTOSSH_GATETIME=0"
 [Install]
 WantedBy=multi-user.target
 
+(to test the connection, ssh adminsales@salessrv1.ddns.net)
 
 4) Create a script in /awaca_scriptsnlogs/scripts called send_ip.sh with this content to change the log file with the mira computer to get the IP each hour and send it to ltesrv5 /home/lteuser/public_ip-mira35cAQ4.log
 

@@ -37,8 +37,8 @@ sync_files_for_date() {
   # Create local directory structure
   mkdir -p "${local_path}"
 
-  # Rsync the files
-  rsync -avz "${REMOTE_USER}@${REMOTE_HOST}:${remote_path}/" "${local_path}/"
+  # Rsync the files. Note exclude files starting with . as these are in the process of being written!
+  rsync -avz --exclude=".*" "${REMOTE_USER}@${REMOTE_HOST}:${remote_path}/" "${local_path}/"
 }
 
 # Delete local files older than ten days
