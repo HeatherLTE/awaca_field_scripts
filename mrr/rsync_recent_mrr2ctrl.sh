@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # script to sync recent data from the mrr to the ctrl pc for transfer to the nas (no direct transfer possible)
-# sync data from today and yesterday and the day before, and delete files older than 30 days
+# sync data from today and yesterday and the day before, and delete files older than 3 days
 
 
 umask 002
@@ -19,13 +19,11 @@ echo "Fetching recent data from MRR"
 DATE1=$(date +"%Y%m%d")         # Today's date
 DATE2=$(date -d "1 day ago" +"%Y%m%d") # Yesterday's date
 DATE3=$(date -d "2 day ago" +"%Y%m%d")
-DATE30=$(date -d "30 day ago" +"%Y%m%d")
 
 # Convert dates to seconds since epoch for comparison
 DATE1_SECONDS=$(date -d "${DATE1}" +%s)
 DATE2_SECONDS=$(date -d "${DATE2}" +%s)
 DATE3_SECONDS=$(date -d "${DATE3}" +%s)
-DATE30_SECONDS=$(date -d "${DATE30}" +%s)
 
 # Function to sync files for a specific date
 sync_files_for_date() {
@@ -41,14 +39,14 @@ sync_files_for_date() {
   rsync -avz --exclude=".*" "${REMOTE_USER}@${REMOTE_HOST}:${remote_path}/" "${local_path}/"
 }
 
-# Delete local files older than ten days
+# Delete local files older than three days
 find "${LOCAL_DIR}" -type f | while read -r file; do
   # Extract the date from the file path
   file_date=$(basename "$(dirname "${file}")")
   file_date_seconds=$(date -d "${file_date}" +%s 2>/dev/null)
 
-  # Check if the file date is older than two days
-  if [[ -n "${file_date_seconds}" ]] && [[ "${file_date_seconds}" -lt "${DATE30_SECONDS}" ]]; then
+  # Check if the file date is older than three days
+  if [[ -n "${file_date_seconds}" ]] && [[ "${file_date_seconds}" -lt "${DATE3_SECONDS}" ]]; then
     echo "Deleting ${file}"
     rm -f "${file}"
   fi
@@ -60,7 +58,6 @@ find "${LOCAL_DIR}" -type d -empty -delete
 # Sync files for the last two days
 sync_files_for_date "${DATE1}"
 sync_files_for_date "${DATE2}"
-sync_files_for_date "${DATE3}"
 
 
 
