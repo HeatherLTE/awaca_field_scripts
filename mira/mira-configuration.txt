@@ -2,7 +2,7 @@ When all these steps are finished, connect between EPFL and the mirapc using:
 
 From mirapc data user
 
-ssh -R 9017:localhost:22 lteuser@128.178.240.186 -p 22
+ssh -R 9099:localhost:22 lteuser@128.178.240.186 -p 22
 
 Where 9017 changes depending on the opu location (9017, 9047, 9085, 9099)
 
@@ -53,7 +53,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/autossh -M 0 -N -o "ServerAliveInterval=30" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes" -R 9017:localhost:22 lteuser@128.178.240.186 -p 22
+ExecStart=/usr/local/bin/autossh -M 0 -N -o "ServerAliveInterval=30" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes" -R 9099:localhost:22 lteuser@128.178.240.186 -p 22
 Restart=always
 RestartSec=10
 User=data
