@@ -21,6 +21,7 @@ import configparser
 # Import config file
 config = configparser.ConfigParser()
 config.read('/home/data/awaca_scriptsnlogs/scripts/config.conf')
+excluded_folders = ['latest', 'second_latest', 'mrr'] #folders in the mira moments file which we don't want to sync
 
 days_old = 60
 cutoff_date = datetime.datetime.utcnow() - datetime.timedelta(days=days_old)
@@ -37,7 +38,7 @@ def main():
     remote_folder = config['PATHS']['NAS_archive_path']
     
     # list local files
-    local_files = list_local_files(local_folder)
+    local_files = list_local_files(local_folder, excluded_folders)
     
     for file, local_mtime in local_files.items():
         if file_on_any_nas(file, remote_folder, ftp_user, ftp_password ):
@@ -119,15 +120,27 @@ def list_ftp_files(ftp, path, remote_root_directory):
 
 
 # function to list local files and modification times
-def list_local_files(path):
+def list_local_files(path, excluded_folders):
     local_files = {}
+    excluded_folders = {'latest', 'second_latest', 'mrr'}  # Folders to exclude
+
     for root, _, files in os.walk(path):
+        # Check if the current root is a symlink that points to any of the excluded directories
+        relative_root = os.path.relpath(root, path)
+        # Check if the current path contains an excluded folder name
+        if any(excluded_folder in relative_root.split(os.sep) for excluded_folder in excluded_folders):
+            continue  # Skip this folder and its contents
+
+        # Check if any of the files are in the excluded directories
         for file in files:
             file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, path)
-            local_files[relative_path] = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
-    #print(f"Files in local path {path}: {local_files}")
-    return local_files # a dictionary of relative paths and modification times as datetime.datetime
+            # Skip the files inside the excluded folders (symlinks or actual directories)
+            if any(excluded_folder in os.path.relpath(file_path, path).split(os.sep) for excluded_folder in excluded_folders):
+                continue  # Skip this file
+
+            local_files[os.path.relpath(file_path, path)] = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
+
+    return local_files  # a dictionary of relative paths and modification times as datetime.datetime
 
 
 #delete empty folders (eg empty day folders once all files deleted, empty month folders once all days deleted)

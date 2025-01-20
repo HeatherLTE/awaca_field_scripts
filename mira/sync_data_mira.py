@@ -20,6 +20,8 @@ import configparser
 # Import config file
 config = configparser.ConfigParser()
 config.read('/home/data/awaca_scriptsnlogs/scripts/config.conf')
+excluded_folders = ['latest', 'second_latest', 'mrr'] #folders in the mira moments file which we don't want to sync
+
 
 sync_current_month = True  # if True, only compare files in the current month to reduce file comparisons
 
@@ -42,7 +44,7 @@ def main():
         remote_folder = config['PATHS']['NAS_archive_path']
     
     # Sync with the NAS database
-    mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
+    mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder, excluded_folders)
     
     if sync_current_month:
         # On the first of each month, also sync the previous month
@@ -57,9 +59,9 @@ def main():
             remote_folder = os.path.join(config['PATHS']['NAS_archive_path'], year_string, month_string)
             
             # Sync with the NAS database
-            mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder)
+            mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder, excluded_folders)
 
-def mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder):
+def mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder, excluded_folders):
 
     for nas in ["NAS1", "NAS2"]:
         for network in ["_SW1", "_SW2"]:
@@ -73,7 +75,7 @@ def mira_sync_with_nas(ftp_user, ftp_password, local_folder, remote_folder):
 
                 # Create list of files to sync
                 ftp_files = list_ftp_files(ftp, remote_folder, remote_folder) # the remote folder is passed twice to allow for recursive function calling for subdirectory reading
-                local_files = list_local_files(local_folder)
+                local_files = list_local_files(local_folder, excluded_folders)
                 files_to_sync = list_files_to_sync(ftp_files, local_files)
 
                 # Upload the files to sync
@@ -120,15 +122,28 @@ def list_ftp_files(ftp, path, remote_root_directory):
     return ftp_files # a dictionary of relative paths and modification times as datetime.datetime
 
 
-def list_local_files(path):
+# function to list local files and modification times
+def list_local_files(path, excluded_folders):
     local_files = {}
+    excluded_folders = {'latest', 'second_latest', 'mrr'}  # Folders to exclude
+
     for root, _, files in os.walk(path):
+        # Check if the current root is a symlink that points to any of the excluded directories
+        relative_root = os.path.relpath(root, path)
+        # Check if the current path contains an excluded folder name
+        if any(excluded_folder in relative_root.split(os.sep) for excluded_folder in excluded_folders):
+            continue  # Skip this folder and its contents
+
+        # Check if any of the files are in the excluded directories
         for file in files:
             file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, path)
-            local_files[relative_path] = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
-    #print(f"Files in local path {path}: {local_files}")
-    return local_files # a dictionary of relative paths and modification times as datetime.datetime
+            # Skip the files inside the excluded folders (symlinks or actual directories)
+            if any(excluded_folder in os.path.relpath(file_path, path).split(os.sep) for excluded_folder in excluded_folders):
+                continue  # Skip this file
+
+            local_files[os.path.relpath(file_path, path)] = datetime.datetime.fromtimestamp(os.path.getmtime(file_path))
+
+    return local_files  # a dictionary of relative paths and modification times as datetime.datetime
 
 def list_files_to_sync(ftp_files, local_files):
     files_to_sync = []
