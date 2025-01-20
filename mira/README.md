@@ -57,7 +57,7 @@ watchdog_mira_ctrlpc.py
 SHELL=/bin/bash
 BASH_ENV=~/.bashrc_conda
 5 * * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/quicklook_scripts/plot_mira_quicklooks.py >> /home/data/awaca_scriptsnlogs/logs/quicklooks_mira.log 2>&1
-10 * * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/quicklook_scripts/plot_mrr_quicklooks_mrr.py >> /home/data/awaca_scriptsnlogs/logs/quicklooks_mrr.log 2>&1
+10 * * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/quicklook_scripts/plot_mrr_quicklooks.py >> /home/data/awaca_scriptsnlogs/logs/quicklooks_mrr.log 2>&1
 
 
 ```
@@ -104,7 +104,7 @@ BASH_ENV=~/.bashrc_conda
 # Watchdog
 The script on the MIRA pc makes a local kibble file in the watchdog folder and syncs it to the 2 control pcs via ftp. The script should be run every 30 minutes. The sync to the control pc is untested!
 
-The script on the control PC checks the age of the kibble and powers the mira relay off and on if the kibble is too old. This script is untested!
+The script on the control PC checks the age of the kibble and powers the mira relay off and on if the kibble is too old. 
 
 # Quicklooks
 The quicklooks are created using the python scripts in the quicklooks_scripts folder. Since xarray is required, the script run in a conda environemnet. The mrr quicklooks are also made on the mira pc. For this the mrr data from the last 2 days are synced to the mira pc using rsync_recent_mrr2mira.sh. Only the last 2 days of mrr data are stored on the mira pc.
@@ -218,13 +218,13 @@ in /etc/logrotate.d, make a file called awaca with the following contents
 }
 	
 ```
-This makes .gz files once the log files are older than one week or larger than 10M. The .gz files can be viewed using zcat. There will only ever be 3 weeks worth of logs in the log folder.
+This makes .gz files once the log files are older than one week or larger than 10M. The .gz files can be viewed using zcat. .xz files can be viewed with xzcat. There will only ever be 3 weeks worth of logs in the log folder.
 
 The operation can be checked with
 ```
 sudo logrotate -f /etc/logrotate.d/awaca
 ```
-(forces the log rotation requested in the awaca file, even if the time period has not passed)
+(forces the log rotation requested in the awaca file, even if the time period has not passed, BUT doesn't apply global settings in logrotate.conf)
 ```
 sudo logrotate /etc/logrotate.conf --debug
 ```
