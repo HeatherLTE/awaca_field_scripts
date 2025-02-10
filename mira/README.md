@@ -17,6 +17,7 @@ rsync_recent_mrr2mira.sh \
 sync_data_mrr.py \
 delete_data_mrr.py (not used) \
 config_mrr.conf \
+push_quicklooks_epfl.sh \
 
 Add the whole quicklook_scripts folder to the scripts folder
 
@@ -51,6 +52,9 @@ watchdog_mira_ctrlpc.py
 
 #mrr transfer to nas
 20,30 2 * * * /usr/bin/python3 /home/data/awaca_scriptsnlogs/scripts/sync_data_mrr.py >> /home/data/awaca_scriptsnlogs/logs/mrr_on_mira2nas.log 2>&1
+
+#push quicklooks to epfl
+15 1 * * * bash /home/data/awaca_scriptsnlogs/scripts/push_quicklooks_epfl.sh >> /home/data/awaca_scriptsnlogs/logs/push_quicklooks_epfl.log 2>&1
 
 
 #quicklooks using a conda python environment
@@ -94,6 +98,10 @@ BASH_ENV=~/.bashrc_conda
 ### In rsync_recent_mrr2mira.sh
 - mrr ip
 - check paths
+
+### In push_quicklooks_epfl.sh 
+- site
+Note that this script is a 'backup' for the script running on ltesrv5 that pulls quicklooks from the mira, in case the reverse ssh tunnel breaks. Also note that this script is important for dmc as the tunnel does not stay open. Could increase time frequency of crontab for dmc.
 
 ### In the quicklooks scripts
 - check paths in plot_mira_quicklooks.py and plot_mrr_quicklooks.py
