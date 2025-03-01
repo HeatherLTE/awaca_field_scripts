@@ -13,6 +13,7 @@ Created on Thu Feb 29 08:09:49 2024
 def plot_mrr_zenith(dsorfilepaths,
                        variable = 'Ze',
                        figsize = [10,4],
+                       fontsize = 10,
                        addcbar = True,
                        ylim = [0,6000],
                        zrange = 'auto',
@@ -99,6 +100,8 @@ def plot_mrr_zenith(dsorfilepaths,
     
     #plot defaults and helper functions
     from mrr.plot_mrr_config import plot_defaults
+    
+    plt.rcParams.update({'font.size': fontsize})
     
     #convert to list to be able to use for loop
     if isinstance(dsorfilepaths, str) or isinstance(dsorfilepaths, xr.Dataset):
@@ -200,7 +203,7 @@ def plot_mrr_zenith(dsorfilepaths,
         ax.set_xlim(xrange_new)
         
         #add the day as title
-        ax.set_title(f'MRR Zenith {site} {xrange_new[0].strftime("%d/%m/%Y")}', loc = 'right', color = 'grey', fontsize = '10')
+        ax.set_title(f'MRR Zenith {site} {xrange_new[0].strftime("%d/%m/%Y")}', loc = 'right', color = 'grey')
         
         
     ax.set_xlabel('Time [UTC]')
@@ -217,7 +220,7 @@ def plot_mrr_zenith(dsorfilepaths,
     if heightaskm:
         y_vals = ax.get_yticks()
         ax.set_yticks(y_vals)
-        ax.set_yticklabels(['{:,.2f}'.format(x /1000) for x in y_vals])
+        ax.set_yticklabels(['{:,.0f}'.format(x /1000) for x in y_vals])
         ax.set_ylabel('Height Above Radar [km]')
     
 
@@ -256,8 +259,9 @@ def plot_mrr_zenith(dsorfilepaths,
 def plot_mrr_zenith_day(day_string_or_datetime,
                            fpath_moments,
                            date_structure_metek = False,
-                       variable = 'Zg',
+                       variable = 'Ze',
                        figsize = [10,4],
+                       fontsize = 10,
                        addcbar = True,
                        ylim = [0,6000],
                        zrange = 'auto',
@@ -308,6 +312,8 @@ def plot_mrr_zenith_day(day_string_or_datetime,
     import os
     from mrr.find_mrr_zenith_files import zenith_full_day_files
     
+    plt.rcParams.update({'font.size': fontsize})
+    
     if isinstance(day_string_or_datetime, str):
         plot_day = dt.datetime.strptime(day_string_or_datetime, '%Y%m%d')
         
@@ -344,7 +350,7 @@ def plot_mrr_zenith_day(day_string_or_datetime,
         return None
     
     #plot the zenith files for that day
-    fig, ax = plot_mrr_zenith(files_one_day, variable = variable, figsize = figsize, addcbar = addcbar, ylim = ylim, zrange = zrange, 
+    fig, ax = plot_mrr_zenith(files_one_day, variable = variable, figsize = figsize, fontsize=fontsize, addcbar = addcbar, ylim = ylim, zrange = zrange, 
                                  long_name = long_name, heightaskm = heightaskm, 
                                  fix2day = True, 
                                  cmap = cmap, 
