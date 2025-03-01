@@ -255,6 +255,7 @@ def plot_mrr_zenith(dsorfilepaths,
 
 def plot_mrr_zenith_day(day_string_or_datetime,
                            fpath_moments,
+                           date_structure_metek = False,
                        variable = 'Zg',
                        figsize = [10,4],
                        addcbar = True,
@@ -286,6 +287,8 @@ def plot_mrr_zenith_day(day_string_or_datetime,
     
     day_string_or_datetime : string or datetime.datetime
         The day to plot. If a string is passed it should be in the format yyyymmdd
+    date_structure_metek : boolean, optional
+        Whether the files are stored in the original mrr folders (YYYYMM/YYYYMMDD) or in folders YYYY/MM/DD. The default is False.
     overwrite : boolean, optional
         Whether to overwrite an existing plot for that day. The default is 'True'.
     returnfig : boolean, optional
@@ -334,7 +337,7 @@ def plot_mrr_zenith_day(day_string_or_datetime,
             
     
     #find the zenith files for that day
-    files_one_day = zenith_full_day_files(day_string_or_datetime, extend = False, search_fpath = fpath_moments)
+    files_one_day = zenith_full_day_files(day_string_or_datetime, extend = False, search_fpath = fpath_moments, date_structure_metek=date_structure_metek)
     
     if files_one_day is None:
         print(f'no zenith files found for {plot_day.strftime("%Y%m%d")}, returning None')

@@ -19,7 +19,7 @@ operational = True #only try to plot the last three days from today
 start_date = dt.date(2024, 5, 13) # day to start making plots on - not used if operational=true
 end_date = dt.date(2024, 5, 13) # day to stop making plots on - not used if operational=true
 
-
+date_structure_metek = True #whether files are stored in the original mrr date folders (True), or YYYY/MM/DD (False)
 quicklook_variables = ['Z', 'VEL', 'WIDTH', 'SNR'] #variables to plot
 # options for variables are 
 #Ze, Z, VEL, WIDTH, SNR, RR
@@ -63,7 +63,7 @@ for plotday in days_to_search:
         
     for variable in quicklook_variables:
         try:
-            plot_mrr_zenith_day(plotday, fpath_moments = fpath_moments, 
+            plot_mrr_zenith_day(plotday, fpath_moments = fpath_moments, date_structure_metek = date_structure_metek,
                                    variable = variable, ylim = zenith_ylim, 
                                    snrthreshold = snrthreshold, saveplot = True, 
                                    overwrite = overwrite_zenith, 

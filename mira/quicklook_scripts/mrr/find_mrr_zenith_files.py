@@ -5,10 +5,7 @@ Created on Mon Jun 25 09:37:22 2024
 
 @author: corden
 """
-# could generalise to finding any type of files...
 
-#intended use: finding all the zenith files in eg a day to plot on a time-height plot
-#would like to also just be able to pass one day, could make a wrapper function for this
 
 import os
 import re
@@ -19,6 +16,7 @@ import numpy as np
 
 def find_mrr_zenith_files(start_datetime, end_datetime, 
                              search_fpath = '/home/corden/Documents/miniprojects_tests/mrr_guyancourt/data/', 
+                             date_structure_metek = False,
                              full_path = True,
                              pattern = "", exclude = ["PPI", "RHI"]):
     """
@@ -37,6 +35,10 @@ def find_mrr_zenith_files(start_datetime, end_datetime,
     search_fpath : string, optional
         where to look for the date-organised moments files
         The default is '/home/corden/Documents/miniprojects_tests/mrr_guyancourt/data/'.
+    date_structure_metek : boolean, optional
+        Whether to use the date structure as used by metek on the mrr (%Y%m/%Y%m%d/).
+        Or, if False, use the structure (%Y/%m/%d/).
+        The default is False.
     pattern : string, optional
         patterns that should be included in desired file names
         The default is "".
@@ -52,8 +54,11 @@ def find_mrr_zenith_files(start_datetime, end_datetime,
     
     days_to_search = pd.date_range(start_datetime.date(), end_datetime, freq = "D")
     
-    paths_to_search = [os.path.join(search_fpath, day.strftime("%Y%m/%Y%m%d")) for day in days_to_search]
-    
+    if date_structure_metek:
+        paths_to_search = [os.path.join(search_fpath, day.strftime("%Y%m/%Y%m%d")) for day in days_to_search]
+    else:
+        paths_to_search = [os.path.join(search_fpath, day.strftime("%Y/%m/%d")) for day in days_to_search]
+        
     
     #first list all files, keeping the full path
     #there are just too many iterations for a list comprehension, use a for loop for now
@@ -95,6 +100,7 @@ def find_mrr_zenith_files(start_datetime, end_datetime,
 
 def zenith_full_day_files(day_string_or_datetime, extend = False, 
                           search_fpath = '/ltedata/Eriswil_2024/StXPOL/Raw_data/moments/', 
+                          date_structure_metek = False, 
                           pattern = "", exclude = ["PPI", "RHI"]):
     """
     wrapper function to find files for plotting a full day of zenith files
@@ -108,6 +114,10 @@ def zenith_full_day_files(day_string_or_datetime, extend = False,
     search_fpath : string, optional
         where to look for the date-organised moments files
         The default is '/ltedata/Eriswil_2024/StXPOL/Raw_data/moments/'.
+    date_structure_metek : boolean, optional
+        Whether to use the date structure as used by metek on the mrr (%Y%m/%Y%m%d/).
+        Or, if False, use the structure (%Y/%m/%d/).
+        The default is False.
     pattern : string, optional
         patterns that should be included in desired file names
         The default is "".
@@ -139,7 +149,12 @@ def zenith_full_day_files(day_string_or_datetime, extend = False,
     else:
         start_datetime = today
     
-    files = find_mrr_zenith_files(start_datetime, end_datetime, search_fpath = search_fpath, pattern = pattern, exclude = exclude)
+    files = find_mrr_zenith_files(start_datetime, end_datetime, search_fpath = search_fpath, date_structure_metek=date_structure_metek, pattern = pattern, exclude = exclude)
     
     return files
         
+
+
+    
+        
+
