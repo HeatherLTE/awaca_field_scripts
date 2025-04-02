@@ -27,18 +27,22 @@ def main():
     
     parser = argparse.ArgumentParser(description="Transfer things from the AWACA Raid to EPFL")
     parser.add_argument("site", help="site of the OPU to copy data from: d17, d47, d85, dmc")
-    parser.add_argument("instrument", help="mira or mrr, uppercase")
+    parser.add_argument("instrument", help="mira or mrr, lowercase")
     parser.add_argument("what", help="What should be transferred: quicklooks, logs or data")
     #read the number of days to sync - this reduces file comparisons and allows for correct subfolder handling. Set to a large number to sync the whole archive
-    parser.add_argument("no_of_days_to_sync", nargs="?", type = int, help = 'the number of days to sync, counting back from today, optional, default 10')
+    parser.add_argument("-n","--no_of_days_to_sync",  type = int, help = 'the number of days to sync, optional, default 10')
+    parser.add_argument("-d", "--start_day",  help = 'as YYYYMMDD, the start day for the data to be synced, optional, default today')
+    
     args = parser.parse_args()
 
     site = args.site
     instrument = args.instrument
     what = args.what
     ndays = args.no_of_days_to_sync if args.no_of_days_to_sync else 10
+    start_day = datetime.datetime.strptime(args.start_day, '%Y%m%d') if args.start_day else datetime.datetime.utcnow()
     
-    print(f'Transferring {what} for the {site} {instrument} for the last {ndays} days')
+    
+    print(f'Transferring {what} for the {site} {instrument} for the {ndays} days ending on {start_day.strftime("%Y.%m.%d")}')
     
     #site = 'D17'
     #instrument = 'MIRA'
@@ -58,8 +62,8 @@ def main():
             print(f'Failed to create local folder: {e}')
     
     #make a list of days to sync
-    today = datetime.datetime.utcnow()
-    days_to_sync = [today - datetime.timedelta(days = i) for i in range(ndays)] 
+    
+    days_to_sync = [start_day - datetime.timedelta(days = i) for i in range(ndays)] 
     
     ## loop through days to sync
     for day in days_to_sync:
