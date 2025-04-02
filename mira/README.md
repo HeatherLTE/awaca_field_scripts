@@ -18,6 +18,9 @@ sync_data_mrr.py \
 delete_data_mrr.py (not used) \
 config_mrr.conf \
 push_quicklooks_epfl.sh \
+make_mira_moments.py \
+make_mrr_moments.py \
+push_moments_epfl.sh \
 
 Add the whole quicklook_scripts folder to the scripts folder
 
@@ -50,18 +53,23 @@ watchdog_mira_ctrlpc.py
 # sync recent data from the mrr for quicklook creation
 2 * * * * bash /home/data/awaca_scriptsnlogs/scripts/rsync_recent_mrr2mira.sh >> /home/data/awaca_scriptsnlogs/logs/rsync_recent_mrr2mira.log 2>&1
 
-#mrr transfer to nas
+# mrr transfer to nas
 20,30 2 * * * /usr/bin/python3 /home/data/awaca_scriptsnlogs/scripts/sync_data_mrr.py >> /home/data/awaca_scriptsnlogs/logs/mrr_on_mira2nas.log 2>&1
 
-#push quicklooks to epfl
-15 1 * * * bash /home/data/awaca_scriptsnlogs/scripts/push_quicklooks_epfl.sh >> /home/data/awaca_scriptsnlogs/logs/push_quicklooks_epfl.log 2>&1
+# push quicklooks to epfl
+30 1 * * * bash /home/data/awaca_scriptsnlogs/scripts/push_quicklooks_epfl.sh >> /home/data/awaca_scriptsnlogs/logs/push_quicklooks_epfl.log 2>&1
 
 
-#quicklooks using a conda python environment
+# quicklooks using a conda python environment
 SHELL=/bin/bash
 BASH_ENV=~/.bashrc_conda
 5 * * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/quicklook_scripts/plot_mira_quicklooks.py >> /home/data/awaca_scriptsnlogs/logs/quicklooks_mira.log 2>&1
 10 * * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/quicklook_scripts/plot_mrr_quicklooks.py >> /home/data/awaca_scriptsnlogs/logs/quicklooks_mrr.log 2>&1
+
+# moments creation and transfer using the same python environment
+20 3 * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/make_mira_moments.py >> /home/data/awaca_scriptsnlogs/logs/moments_mira.log 2>&1
+40 3 * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/make_mira_moments.py >> /home/data/awaca_scriptsnlogs/logs/moments_mira.log 2>&1
+15 4 * * * bash /home/data/awaca_scriptsnlogs/scripts/push_moments_epfl.sh >> /home/data/awaca_scriptsnlogs/logs/push_moments_epfl.log 2>&1
 
 
 ```
@@ -102,6 +110,13 @@ BASH_ENV=~/.bashrc_conda
 ### In push_quicklooks_epfl.sh 
 - site
 Note that this script is a 'backup' for the script running on ltesrv5 that pulls quicklooks from the mira, in case the reverse ssh tunnel breaks. Also note that this script is important for dmc as the tunnel does not stay open. Could increase time frequency of crontab for dmc.
+
+### In make_mira_moments.py and make_mrr_moments.py
+- set operational=True
+- paths
+
+### In push_moments_epfl.sh
+- site!
 
 ### In the quicklooks scripts
 - check paths in plot_mira_quicklooks.py and plot_mrr_quicklooks.py
