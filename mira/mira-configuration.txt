@@ -103,10 +103,12 @@ WantedBy=multi-user.target
 public_ip=$(curl -4 -s ifconfig.me)
 
 # Send IP to remote server
-ssh lteuser@ltesrv5.epfl.ch "echo $public_ip >> ~/public_ip-mira35cAQ4.log"
-ssh adminsales@salessrv1.ddns.net "echo $public_ip >> ~/public_ip-mira35cAQ4.log"
+ssh lteuser@ltesrv5.epfl.ch "echo $public_ip > ~/public_ip-mira35cAQ4.log"
+ssh adminsales@salessrv1.ddns.net "echo $public_ip > ~/public_ip-mira35cAQ4.log"
 
 Note to change the name of the log!
+Note changed from >> to > in order to overwrite the file rather than add to it.
+Note that curl may not work, in case can use wget instead: public_ip=$(wget -qO- https://api.ipify.org)
 
 
 5) Create a crontab job on the mirapc as data user:

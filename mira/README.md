@@ -68,7 +68,7 @@ BASH_ENV=~/.bashrc_conda
 
 # moments creation and transfer using the same python environment
 20 3 * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/make_mira_moments.py >> /home/data/awaca_scriptsnlogs/logs/moments_mira.log 2>&1
-40 3 * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/make_mira_moments.py >> /home/data/awaca_scriptsnlogs/logs/moments_mira.log 2>&1
+40 3 * * * conda activate quicklook_env; python3 /home/data/awaca_scriptsnlogs/scripts/make_mrr_moments.py >> /home/data/awaca_scriptsnlogs/logs/moments_mrr.log 2>&1
 15 4 * * * bash /home/data/awaca_scriptsnlogs/scripts/push_moments_epfl.sh >> /home/data/awaca_scriptsnlogs/logs/push_moments_epfl.log 2>&1
 
 
