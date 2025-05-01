@@ -8,7 +8,7 @@
 
 umask 002
 
-SITE='d17'
+SITE='dmc'
 REMOTE_USER='lteuser'
 REMOTE_HOST='128.178.240.186'
 LOCAL_DIR_MIRA='/mom/mira_moments/'
@@ -41,8 +41,8 @@ find "${LOCAL_DIR_MRR}" -type f | while read -r file; do
   file_datetime="${file_date_part} ${file_time_part:0:2}:${file_time_part:2:2}:${file_time_part:4:2}"
   file_date_seconds=$(date -d "${file_datetime}" +%s 2>/dev/null)
 
-  # Check if the file date is older than two days
-  if [[ -n "${file_date_seconds}" ]] && [[ "${file_date_seconds}" -lt "${DATE30_SECONDS}" ]]; then
+  # Check if the file date is older than ten days
+  if [[ -n "${file_date_seconds}" ]] && [[ "${file_date_seconds}" -lt "${DATE10_SECONDS}" ]]; then
     echo "Deleting ${file}"
     rm -f "${file}"
   fi
@@ -57,8 +57,8 @@ find "${LOCAL_DIR_MIRA}" -type f | while read -r file; do
   file_datetime="${file_date_part} ${file_time_part:0:2}:${file_time_part:2:2}:00"
   file_date_seconds=$(date -d "${file_datetime}" +%s 2>/dev/null)
 
-  # Check if the file date is older than two days
-  if [[ -n "${file_date_seconds}" ]] && [[ "${file_date_seconds}" -lt "${DATE30_SECONDS}" ]]; then
+  # Check if the file date is older than ten days
+  if [[ -n "${file_date_seconds}" ]] && [[ "${file_date_seconds}" -lt "${DATE10_SECONDS}" ]]; then
     echo "Deleting ${file}"
     rm -f "${file}"
   fi
