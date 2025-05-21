@@ -1,0 +1,79 @@
+# How to set up the email service used to send quicklooks from ltesrv5
+# Notes by Heather Corden 21/5/2025
+# Note: it seems like an overcomplicated system...
+
+1) Installs on ltesrv5
+
+- install mutt (command-line email service that allows attachments)
+apt install mutt
+- install msmtp (smtp client, transmits the email to an smtp server for delivery)
+apt install msmtp
+
+2) Account on Brevo
+
+- I didn't find a way to use a gmail address directly, so I made an account on Brevo. It provides an smtp server which can be used by msmtp.
+https://www.brevo.com
+
+- I made an account using the lte.instru gmail account:
+Email address: lte.instru@gmail.com
+Password: ***-***-*** (for both gmail and for the brevo account)
+First name: Heather
+Last name: Corden
+Company: LTE research lab at EPFL
+
+- Note that you have to wait arond half an hour for the account to be validated before emails can be sent. The free account is limited to 300 emails per day.
+
+3) SMTP key on Brevo:
+- Top right menu, SMTP and API
+- Button Create SMTP key
+- Gives a long string password that can be used by msmtp
+
+This is the key I created:
+Login: 8d8b2a001@smtp-brevo.com
+Key name: mutt
+Key: **********
+
+4) Config files on ltesrv5
+
+- As lteuser, create the config files for mutt and msmtp
+
+nano ~/.msmtprc
+
+defaults
+auth           on
+tls            on
+tls_starttls   on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.msmtp.log
+
+account        brevo
+host           smtp-relay.brevo.com
+port           587
+from           lte.instru@gmail.com
+user           8d8b2a001@smtp-brevo.com
+password       ******************
+account default : brevo
+
+- The 'from' should be the gmail account, whereas the 'user' should be the Brevo SMTP login. The 'password' should be the Key created in step 3.
+
+nano ~/.muttrc
+
+set sendmail="/usr/bin/msmtp"
+set use_from=yes
+set realname="LTE Instrum"
+set from="lte.instru@gmail.com"
+set envelope_from=yes
+
+- The 'realname' will appear as the sender name when the email arrives.
+
+5) Minimum test of settings
+- test that an email can be sent using msmtp and mutt
+
+echo -e "Subject: Debug Test\n\nTesting msmtp with Brevo." | msmtp --debug <recipient email>
+
+"This is a test email body" | mutt -s "Test Subject from mutt" -d 5 -- <recipient email>
+
+6) If the above works then the script email_quicklooks.sh should work too, and can be run every day using crontab
+
+
+
